@@ -5,6 +5,7 @@
  */
 package org.openx.data.jsonserde.objectinspector.primitive;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.apache.hadoop.hive.serde2.io.TimestampWritable;
 
@@ -45,6 +46,9 @@ public class ParsePrimitiveUtils {
     public static long parseLong(String s) {
         if (isHex(s)) {
             return Long.parseLong(s.substring(2), 16);
+        } if (s.contains("e") || s.contains("E")) {
+            BigDecimal db = new BigDecimal(s);
+            return db.longValue();
         } else {
             return Long.parseLong(s);
         }
