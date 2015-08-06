@@ -202,7 +202,8 @@ public class JSONObject {
                 return;
             default:
                 x.back();
-                key = x.nextValue().toString().toLowerCase();
+//                key = x.nextValue().toString().toLowerCase();
+                key = x.nextValue().toString(); // modified by bangtao
             }
 
 // The key is followed by ':'. We will also tolerate '=' or '=>'.
