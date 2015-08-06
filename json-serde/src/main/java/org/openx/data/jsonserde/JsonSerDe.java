@@ -95,6 +95,7 @@ public class JsonSerDe implements SerDe {
     @Override
     public void initialize(Configuration conf, Properties tbl) throws SerDeException {
         LOG.debug("Initializing SerDe");
+        LOG.debug(tbl.keySet());
         // Get column names and sort order
         String columnNameProperty = tbl.getProperty(Constants.LIST_COLUMNS);
         String columnTypeProperty = tbl.getProperty(Constants.LIST_COLUMN_TYPES);
@@ -123,8 +124,12 @@ public class JsonSerDe implements SerDe {
                 .getStructTypeInfo(columnNames, columnTypes);
         
         // build options
+        LOG.debug("build options");
         options = 
                 new JsonStructOIOptions(getMappings(tbl));
+
+        LOG.debug(options.getMappings());
+
         
         rowObjectInspector = (StructObjectInspector) JsonObjectInspectorFactory
                 .getJsonObjectInspectorFromTypeInfo(rowTypeInfo, options);
@@ -218,6 +223,7 @@ public class JsonSerDe implements SerDe {
                     + objInspector.getTypeName());
         }
 
+        LOG.debug(columnNames);
         JSONObject serializer = 
             serializeStruct( obj, (StructObjectInspector) objInspector, columnNames);
         
@@ -229,7 +235,8 @@ public class JsonSerDe implements SerDe {
 
     private String getSerializedFieldName( List<String> columnNames, int pos, StructField sf) {
         String n = (columnNames==null? sf.getFieldName(): columnNames.get(pos));
-        
+        LOG.debug("getSerializedFieldName : " + n);
+        LOG.debug("getFieldName() : " + sf.getFieldName());
         if(options.getMappings().containsKey(n)) {
             return options.getMappings().get(n);
         } else {
@@ -425,7 +432,7 @@ public class JsonSerDe implements SerDe {
             String s = (String) o;
             
             if(s.startsWith(PFX) ) {
-                mps.put(s.substring(n), tbl.getProperty(s).toLowerCase());
+                mps.put(s.substring(n), tbl.getProperty(s));
             }
         }
         return mps;
